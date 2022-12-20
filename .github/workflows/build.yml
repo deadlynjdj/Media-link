@@ -7,8 +7,6 @@ on:
   schedule:
     - cron: '* 1 * * *'
 
-  workflow_dispatch:
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -24,9 +22,6 @@ jobs:
       # Runs a single command using the runners shell
       - name: get the dbs
         run: java -jar tools\generator\anime-lists-generator-0.0.1.jar
-      - name: build full
-        working-directory: db
-        run: jq -s 'flatten | group_by(.anidb_id) | map(if .[0] | has("anidb_id") then reduce .[] as $x ({}; . * $x) else .[] end)' "<anime-offline-database-reduced.json>" "<anime-lists-reduced.json>" > "<anime-list-full.json>"
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: just a refresh
